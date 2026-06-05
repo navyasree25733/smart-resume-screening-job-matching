@@ -17,3 +17,4 @@ sqlalchemy
 passlib
 python-jose[cryptography]==3.3.0
 google-generativeai
+reportlab
