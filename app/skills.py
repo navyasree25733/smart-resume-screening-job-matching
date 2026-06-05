@@ -170,12 +170,18 @@
 import spacy
 from typing import Dict
 
+# try:
+#     nlp = spacy.load("en_core_web_sm")
+# except OSError:
+#     print("Run: python -m spacy download en_core_web_sm")
+#     exit(1)
+
 try:
     nlp = spacy.load("en_core_web_sm")
 except OSError:
-    print("Run: python -m spacy download en_core_web_sm")
-    exit(1)
-
+    raise RuntimeError(
+        "SpaCy model 'en_core_web_sm' is not installed."
+    )
 from spacy.matcher import PhraseMatcher
 
 TECHNICAL_SKILLS = {
