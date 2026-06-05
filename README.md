@@ -1,3 +1,15 @@
+---
+title: Smart Resume Screening
+emoji: 🚀
+colorFrom: blue
+colorTo: green
+sdk: docker
+pinned: false
+---
+
+# Smart Resume Screening and Job Matching System
+
+A FastAPI-based application that performs resume screening, ATS scoring, semantic matching, and job recommendations.
 # Smart Resume Screening & Job Matching System
 
 ## Overview
