@@ -1,0 +1,6 @@
+__pycache__/
+*.pyc
+.env
+resume_screening.db
+job_descriptions.csv
+uploads/

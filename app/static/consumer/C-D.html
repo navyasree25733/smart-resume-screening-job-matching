@@ -1,0 +1,2021 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Consumer Dashboard - AI Resume Screening</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    
+        <link rel="stylesheet" href="style.css">
+
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+    >
+    <style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Arial,sans-serif;
+}
+
+/* BODY */
+
+body{
+
+    background:
+    linear-gradient(
+        135deg,
+        #021b26,
+        #062432,
+        #0b3142
+    );
+
+    color:white;
+
+    overflow-x:hidden;
+
+    position:relative;
+}
+
+/* GLOW EFFECT */
+
+body::before{
+
+    content:"";
+
+    position:fixed;
+
+    width:500px;
+    height:500px;
+
+    border-radius:50%;
+
+    background:
+    radial-gradient(
+        rgba(67,233,123,0.12),
+        transparent 70%
+    );
+
+    top:-180px;
+    left:-150px;
+
+    z-index:-1;
+}
+
+body::after{
+
+    content:"";
+
+    position:fixed;
+
+    width:450px;
+    height:450px;
+
+    border-radius:50%;
+
+    background:
+    radial-gradient(
+        rgba(139,92,246,0.14),
+        transparent 70%
+    );
+
+    bottom:-180px;
+    right:-150px;
+
+    z-index:-1;
+}
+
+/* MAIN */
+
+.main-layout{
+
+    display:flex;
+
+    min-height:100vh;
+}
+
+/* SIDEBAR */
+
+.sidebar{
+
+    width:280px;
+
+    background:
+    linear-gradient(
+        180deg,
+        rgba(7,25,38,0.96),
+        rgba(5,18,28,0.98)
+    );
+
+    border-right:
+    1px solid rgba(255,255,255,0.08);
+
+    padding:25px 18px;
+
+    transition:0.3s;
+
+    position:sticky;
+
+    top:0;
+
+    height:100vh;
+
+    backdrop-filter:blur(20px);
+
+    box-shadow:
+    10px 0 30px rgba(0,0,0,0.25);
+}
+
+/* LOGO */
+
+.logo-section{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:18px;
+
+    margin-bottom:40px;
+}
+
+.menu-btn{
+
+    width:46px;
+
+    height:46px;
+
+    border:none;
+
+    border-radius:16px;
+
+    background:
+    linear-gradient(
+        135deg,
+        #43e97b,
+        #38f9d7,
+        #8b5cf6
+    );
+
+    color:#021b26;
+
+    cursor:pointer;
+
+    font-size:18px;
+
+    box-shadow:
+    0 10px 25px rgba(67,233,123,0.2);
+}
+
+.logo-text{
+
+    font-size:28px;
+
+    font-weight:bold;
+
+    background:
+    linear-gradient(
+        135deg,
+        #43e97b,
+        #38f9d7,
+        #8b5cf6
+    );
+
+    -webkit-background-clip:text;
+
+    -webkit-text-fill-color:transparent;
+}
+
+/* MENU */
+
+.sidebar-menu{
+
+    list-style:none;
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:12px;
+}
+
+.sidebar-menu li{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:15px;
+
+    padding:16px 18px;
+
+    border-radius:18px;
+
+    cursor:pointer;
+
+    transition:0.35s ease;
+
+    color:#dbe7ec;
+
+    font-weight:500;
+
+    position:relative;
+
+    overflow:hidden;
+}
+
+.sidebar-menu li i{
+
+    width:22px;
+
+    font-size:18px;
+}
+
+/* ACTIVE */
+
+.sidebar-menu li.active{
+
+    background:
+    linear-gradient(
+        135deg,
+        #43e97b,
+        #38f9d7,
+        #8b5cf6
+    );
+
+    color:#021b26;
+
+    font-weight:bold;
+
+    box-shadow:
+    0 10px 25px rgba(67,233,123,0.2);
+}
+
+/* HOVER */
+
+.sidebar-menu li:hover{
+
+    background:
+    rgba(255,255,255,0.08);
+
+    transform:translateX(6px);
+}
+
+/* COLLAPSE */
+
+.sidebar.collapsed{
+
+    width:90px;
+}
+
+.sidebar.collapsed .logo-text{
+
+    display:none;
+}
+
+.sidebar.collapsed .sidebar-menu span{
+
+    display:none;
+}
+
+.sidebar.collapsed .sidebar-menu li{
+
+    justify-content:center;
+}
+
+.sidebar.collapsed .logo-section{
+
+    justify-content:center;
+}
+
+/* CONTENT */
+
+.content-area{
+
+    flex:1;
+
+    padding:35px;
+}
+
+/* TOPBAR */
+
+.topbar{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    margin-bottom:35px;
+}
+
+.topbar h1{
+
+    font-size:42px;
+
+    margin-bottom:8px;
+}
+
+.topbar p{
+
+    color:#b8c8cf;
+}
+
+/* PROFILE */
+
+.profile-chip{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:12px;
+
+    background:
+    rgba(255,255,255,0.06);
+
+    border:
+    1px solid rgba(255,255,255,0.08);
+
+    padding:10px 16px;
+
+    border-radius:18px;
+
+    backdrop-filter:blur(18px);
+
+    box-shadow:
+    0 4px 14px rgba(0,0,0,0.15);
+}
+
+.profile-avatar{
+
+    width:42px;
+
+    height:42px;
+
+    border-radius:50%;
+
+    background:
+    linear-gradient(
+        135deg,
+        #43e97b,
+        #38f9d7,
+        #8b5cf6
+    );
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    color:#021b26;
+
+    font-weight:bold;
+}
+
+/* ANALYTICS */
+
+.analytics-cards{
+
+    display:grid;
+
+    grid-template-columns:
+    repeat(auto-fit,minmax(280px,1fr));
+
+    gap:30px;
+    width: 100%;
+
+ 
+    margin-bottom:35px;
+}
+
+/* CARD */
+
+.analytics-card{
+
+    background:
+    linear-gradient(
+        145deg,
+        rgba(255,255,255,0.06),
+        rgba(255,255,255,0.03)
+    );
+
+    border:
+    1px solid rgba(255,255,255,0.08);
+
+    border-radius:28px;
+
+    padding:30px;
+
+    backdrop-filter:blur(20px);
+
+    transition:0.4s ease;
+
+    position:relative;
+
+    overflow:hidden;
+
+    box-shadow:
+    0 15px 40px rgba(0,0,0,0.2);
+}
+
+.analytics-card::before{
+
+    content:"";
+
+    position:absolute;
+
+    width:220px;
+    height:220px;
+
+    background:
+    radial-gradient(
+        rgba(67,233,123,0.12),
+        transparent 70%
+    );
+
+    top:-100px;
+    right:-100px;
+}
+
+.analytics-card:hover{
+
+    transform:
+    translateY(-8px)
+    scale(1.01);
+
+    box-shadow:
+    0 20px 50px rgba(139,92,246,0.15);
+}
+
+.analytics-card h3{
+
+    margin-bottom:25px;
+
+    font-size:22px;
+}
+
+/* SCORE */
+
+.score-ring{
+
+    width:120px;
+
+    height:120px;
+
+    border-radius:50%;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    font-size:32px;
+
+    font-weight:bold;
+
+    margin-bottom:20px;
+
+    color:white;
+
+    background:
+    radial-gradient(
+        #021b26 55%,
+        transparent 56%
+    ),
+    conic-gradient(
+        #43e97b 0%,
+        #38f9d7 40%,
+        #8b5cf6 88%,
+        rgba(255,255,255,0.08) 88% 100%
+    );
+
+    box-shadow:
+    0 0 30px rgba(67,233,123,0.18);
+}
+
+.analytics-card p{
+
+    color:#b8c8cf;
+
+    line-height:1.8;
+}
+
+/* TRACKER */
+
+.tracker-box{
+
+    padding:24px;
+
+    border-radius:20px;
+
+    background:
+    rgba(255,255,255,0.05);
+
+    color:#43e97b;
+
+    font-weight:bold;
+
+    font-size:18px;
+
+    border:
+    1px solid rgba(67,233,123,0.15);
+}
+
+/* BUTTON */
+
+.linkedin-btn{
+
+    width:100%;
+
+    height:54px;
+
+    border:none;
+
+    border-radius:16px;
+
+    background:
+    linear-gradient(
+        135deg,
+        #43e97b,
+        #38f9d7,
+        #8b5cf6
+    );
+
+    color:#021b26;
+
+    font-size:16px;
+
+    font-weight:bold;
+
+    cursor:pointer;
+
+    margin-top:20px;
+
+    transition:0.35s ease;
+
+    box-shadow:
+    0 10px 25px rgba(67,233,123,0.15);
+}
+
+.linkedin-btn:hover{
+
+    transform:
+    translateY(-3px)
+    scale(1.01);
+}
+
+/* SCAN */
+
+.scan-section{
+
+    background:
+    linear-gradient(
+        145deg,
+        rgba(255,255,255,0.06),
+        rgba(255,255,255,0.03)
+    );
+
+    border:
+    1px solid rgba(255,255,255,0.08);
+
+    border-radius:30px;
+
+    padding:35px;
+
+    margin-bottom:35px;
+
+    backdrop-filter:blur(18px);
+
+    box-shadow:
+    0 15px 40px rgba(0,0,0,0.2);
+}
+
+.scan-section h2{
+
+    margin-bottom:30px;
+
+    font-size:30px;
+}
+
+.scan-grid{
+
+    display:grid;
+
+    grid-template-columns:1fr 1fr;
+
+    gap:25px;
+
+    margin-bottom:30px;
+}
+
+.scan-box{
+
+    background:
+    rgba(255,255,255,0.04);
+
+    border:
+    1px solid rgba(255,255,255,0.08);
+
+    border-radius:24px;
+
+    padding:25px;
+}
+
+.scan-header{
+
+    margin-bottom:20px;
+}
+
+.scan-header h3{
+
+    font-size:20px;
+}
+
+/* TEXTAREA */
+
+textarea{
+
+    width:100%;
+
+    height:220px;
+
+    border:
+    1px solid rgba(255,255,255,0.08);
+
+    border-radius:18px;
+
+    padding:18px;
+
+    resize:none;
+
+    outline:none;
+
+    font-size:15px;
+
+    background:
+    rgba(255,255,255,0.05);
+
+    color:white;
+}
+
+textarea:focus{
+
+    border-color:#43e97b;
+}
+
+/* UPLOAD */
+
+.upload-area{
+
+    border:
+    2px dashed rgba(67,233,123,0.25);
+
+    border-radius:22px;
+
+    height:220px;
+
+    display:flex;
+
+    flex-direction:column;
+
+    justify-content:center;
+
+    align-items:center;
+
+    gap:18px;
+
+    background:
+    rgba(255,255,255,0.03);
+
+    transition:0.35s ease;
+}
+
+.upload-area:hover{
+
+    background:
+    rgba(255,255,255,0.05);
+}
+
+.upload-area i{
+
+    font-size:44px;
+
+    color:#43e97b;
+}
+
+.upload-area p{
+
+    color:#b8c8cf;
+}
+
+/* ANALYZE */
+
+.analyze-btn{
+
+    width:100%;
+
+    height:60px;
+
+    border:none;
+
+    border-radius:18px;
+
+    background:
+    linear-gradient(
+        135deg,
+        #43e97b,
+        #38f9d7,
+        #8b5cf6
+    );
+
+    color:#021b26;
+
+    font-size:17px;
+
+    font-weight:bold;
+
+    cursor:pointer;
+
+    transition:0.35s ease;
+}
+
+.analyze-btn:hover{
+
+    transform:
+    translateY(-3px)
+    scale(1.01);
+}
+
+/* HISTORY */
+
+.history-section{
+
+    background:
+    linear-gradient(
+        145deg,
+        rgba(255,255,255,0.06),
+        rgba(255,255,255,0.03)
+    );
+
+    border:
+    1px solid rgba(255,255,255,0.08);
+
+    border-radius:30px;
+
+    padding:35px;
+
+    backdrop-filter:blur(18px);
+
+    box-shadow:
+    0 15px 40px rgba(0,0,0,0.2);
+}
+
+.history-header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:35px;
+}
+
+.history-header h2{
+    font-size:34px;
+    font-weight:700;
+    flex:1;
+    margin:0;
+}
+
+.view-all-btn{
+    width:auto;
+    padding:14px 28px;
+
+    border:none;
+    border-radius:14px;
+
+    background:linear-gradient(
+        135deg,
+        #43e97b,
+        #38f9d7,
+        #8b5cf6
+    );
+
+    color:#021b26;
+    font-weight:700;
+    font-size:16px;
+
+    cursor:pointer;
+}
+
+/* TABLE */
+
+table{
+
+    width:100%;
+
+    border-collapse:collapse;
+}
+
+thead{
+
+    background:
+    rgba(255,255,255,0.04);
+}
+
+th{
+
+    text-align:left;
+
+    padding:18px;
+
+    color:#43e97b;
+
+    font-size:14px;
+}
+
+td{
+
+    padding:20px 18px;
+
+    border-top:
+    1px solid rgba(255,255,255,0.06);
+
+    color:#dbe7ec;
+
+    font-weight:500;
+}
+
+/* STATUS */
+
+tr:nth-child(1) td:last-child{
+
+    color:#43e97b;
+}
+
+tr:nth-child(2) td:last-child{
+
+    color:#38f9d7;
+}
+
+tr:nth-child(3) td:last-child{
+
+    color:#8b5cf6;
+}
+
+/* RESPONSIVE */
+
+@media(max-width:1100px){
+
+    .scan-grid{
+
+        grid-template-columns:1fr;
+    }
+}
+
+@media(max-width:850px){
+
+    .sidebar{
+
+        position:fixed;
+
+        left:-280px;
+
+        z-index:1000;
+    }
+
+    .sidebar.active{
+
+        left:0;
+    }
+
+    .content-area{
+
+        padding:20px;
+    }
+
+    .topbar{
+
+        flex-direction:column;
+
+        align-items:flex-start;
+
+        gap:20px;
+    }
+
+    .topbar h1{
+
+        font-size:34px;
+    }
+
+    .history-section{
+
+        overflow-x:auto;
+    }
+}
+
+.analytics-grid{
+    display:grid;
+    grid-template-columns:repeat(3, 1fr);
+    gap:25px;
+}
+
+.analytics-card{
+    min-height:220px;
+}
+
+.stat-value{
+    font-size:48px;
+    font-weight:700;
+    color:#43e97b;
+    margin:15px 0;
+}
+
+.recommendation-text{
+    color:#dbe7ec;
+    font-size:18px;
+    line-height:1.7;
+    margin-top:15px;
+}
+
+@media(max-width:1200px){
+
+    .analytics-grid{
+
+        grid-template-columns:
+        repeat(2,1fr);
+
+    }
+
+}
+
+@media(max-width:768px){
+
+    .analytics-grid{
+
+        grid-template-columns:1fr;
+
+    }
+
+}
+</style>
+<style>
+    .scan-section{
+
+    background:
+    rgba(255,255,255,0.05);
+
+    backdrop-filter:
+    blur(20px);
+
+    border:1px solid
+    rgba(255,255,255,0.08);
+
+    border-radius:30px;
+
+    padding:40px;
+
+    margin-top:30px;
+}
+
+.scan-section h2{
+
+    font-size:42px;
+
+    font-weight:700;
+
+    margin-bottom:35px;
+
+    color:#ffffff;
+}
+
+#resumeForm{
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:25px;
+}
+
+.form-group{
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:10px;
+}
+
+.form-group label{
+
+    color:#ffffff;
+
+    font-size:18px;
+
+    font-weight:600;
+}
+
+.form-group input[type="text"]{
+
+    width:100%;
+
+    height:60px;
+
+    padding:0 20px;
+
+    border:none;
+
+    outline:none;
+
+    border-radius:16px;
+
+    background:
+    rgba(255,255,255,0.08);
+
+    color:white;
+
+    font-size:16px;
+}
+
+.form-group textarea{
+
+    width:100%;
+
+    min-height:220px;
+
+    padding:20px;
+
+    border:none;
+
+    outline:none;
+
+    resize:vertical;
+
+    border-radius:20px;
+
+    background:
+    rgba(255,255,255,0.08);
+
+    color:white;
+
+    font-size:16px;
+
+    line-height:1.6;
+}
+
+.form-group input::placeholder,
+.form-group textarea::placeholder{
+
+    color:
+    rgba(255,255,255,0.45);
+}
+
+.form-group input[type="file"]{
+
+    padding:15px;
+
+    border-radius:16px;
+
+    background:
+    rgba(255,255,255,0.08);
+
+    color:white;
+
+    cursor:pointer;
+}
+
+#submitBtn{
+
+    width:100%;
+
+    height:60px;
+
+    border:none;
+
+    border-radius:18px;
+
+    cursor:pointer;
+
+    font-size:18px;
+
+    font-weight:700;
+
+    color:#000;
+
+    background:
+    linear-gradient(
+        135deg,
+        #43e97b,
+        #4facfe,
+        #8b5cf6
+    );
+
+    transition:0.3s ease;
+}
+
+#submitBtn:hover{
+
+    transform:
+    translateY(-3px);
+
+    box-shadow:
+    0 10px 30px
+    rgba(79,172,254,0.35);
+}
+.form-group input[type="file"]{
+
+    width:100%;
+
+    padding:18px 20px;
+
+    border:none;
+
+    border-radius:18px;
+
+    background:
+    rgba(255,255,255,0.08);
+
+    color:white;
+
+    font-size:16px;
+
+    cursor:pointer;
+}
+
+.form-group input[type="file"]::file-selector-button{
+
+    padding:12px 20px;
+
+    margin-right:15px;
+
+    border:none;
+
+    border-radius:12px;
+
+    font-size:15px;
+
+    font-weight:600;
+
+    cursor:pointer;
+
+    color:#000;
+
+    background:
+    linear-gradient(
+        135deg,
+        #43e97b,
+        #4facfe
+    );
+
+    transition:0.3s ease;
+}
+
+.form-group input[type="file"]::file-selector-button:hover{
+
+    transform:
+    translateY(-2px);
+
+    opacity:0.9;
+}
+</style>
+</head>
+<body>
+
+    <div class="main-layout">
+
+    <!-- SIDEBAR -->
+
+    <div class="sidebar" id="sidebar">
+
+        <div class="logo-section">
+
+            <button class="menu-btn" onclick="toggleSidebar()">
+                <i class="fa-solid fa-bars"></i>
+            </button>
+
+            <h2 class="logo-text">
+                TalentSync
+            </h2>
+
+        </div>
+
+        <ul class="sidebar-menu">
+
+            <!-- <li class="new-scan-btn" onclick="handleNewScan()">
+                <i class="fa-solid fa-plus"></i>
+                <span>New Scan</span>
+            </li> -->
+
+            <li class="active">
+                <i class="fa-solid fa-house"></i>
+                <span>Dashboard</span>
+            </li>
+
+            <li onclick="window.location.href='/C-H'">
+                <i class="fa-solid fa-clock-rotate-left"></i>
+                <span>History</span>
+            </li>
+
+            <li onclick="window.location.href='/C-P'">
+                <i class="fa-solid fa-user"></i>
+                <span>Profile</span>
+            </li>
+
+            <li onclick="logoutUser()">
+                <i class="fa-solid fa-right-from-bracket"></i>
+                <span>Logout</span>
+            </li>
+        </ul>
+    </div>
+
+
+    <div class="content-area">
+
+        <div class="topbar">
+            <div>
+                <h1 id="welcomeName"> Welcome User! </h1>
+                <p>Resume Intelligence Dashboard</p>
+            </div>
+            <div class="profile-chip">
+                <div class="profile-avatar" id="profileAvatar">
+                    U
+                </div>
+                <span id="profileName">
+                        User
+                </span>
+            </div>
+        </div>
+
+        <div class="analytics-cards">
+            <div class="analytics-grid">
+                <div class="analytics-card">
+                    <h3>Total Resume Scans</h3>
+                    <div class="stat-value" id="totalScans">0</div>
+                    <p>Total resumes analyzed</p>
+                </div>
+                <div class="analytics-card">
+                    <h3>Overall Accuracy</h3>
+                    <div class="stat-value" id="overallAccuracy">0%</div>
+                    <p>Average semantic match accuracy</p>
+                </div>
+                <div class="analytics-card">
+                    <h3>Latest AI Recommendation</h3>
+                    <p class="recommendation-text" id="latestRecommendation">
+                        No recommendations available
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- NEW SCAN -->
+
+        <div class="scan-section" id="scanSection">
+
+            <h2>New Resume Scan</h2>
+            <form id="resumeForm">
+                <div class="form-group">
+                    <label for="jobTitle">Job Title</label>
+                    <input type="text" id="jobTitle" placeholder="e.g., Software Engineer" required>
+                </div>
+                <div class="form-group">
+                    <label for="jobDesc">Job Description</label>
+                    <textarea id="jobDesc" placeholder="Paste the job description here..." required></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="resumeFile">Resume (PDF or DOCX)</label>
+                    <input type="file" id="resumeFile" accept=".pdf" required>
+                </div>
+                <button type="submit" id="submitBtn">Analyze My Resume</button>
+            </form>
+        </div>
+
+        <div class="history-section">
+            <div class="history-header">
+                <h2>Recent Scan History</h2>
+                <button class="view-all-btn" onclick="window.location.href='/static/consumer/C-H.html'">
+                    View All
+                </button>
+            </div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Role</th>
+                        <th>ATS Score</th>
+                        <th>Match</th>
+                        <th>Date</th>
+                    </tr>
+                </thead>
+                <tbody id="historyTableBody">
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- 
+<script>
+
+// ==========================
+// USER PROFILE
+// ==========================
+
+const currentUser = JSON.parse(
+    localStorage.getItem("currentUser")
+);
+
+if (!currentUser) {
+    window.location.href = "/login";
+}
+
+document.getElementById("welcomeName").innerText =
+    `Welcome, ${currentUser.full_name}`;
+
+document.getElementById("profileName").innerText =
+    currentUser.full_name;
+
+document.getElementById("profileAvatar").innerText =
+    currentUser.full_name.charAt(0).toUpperCase();
+
+
+// ==========================
+// HISTORY MANAGEMENT
+// ==========================
+
+function getHistory() {
+
+    const history = JSON.parse(
+    localStorage.getItem(
+        `scanHistory_${currentUser.id}`
+    ) || "[]"
+);
+
+    const uniqueHistory = [];
+
+    history.forEach(item => {
+
+        const exists = uniqueHistory.some(
+            h =>
+                h.role === item.role &&
+                h.ats_score === item.ats_score &&
+                h.date === item.date
+        );
+
+        if (!exists) {
+            uniqueHistory.push(item);
+        }
+    });
+
+    localStorage.setItem(
+    `scanHistory_${currentUser.id}`,
+    JSON.stringify(history)
+);
+
+    return uniqueHistory;
+}
+
+
+// ==========================
+// DASHBOARD STATS
+// ==========================
+
+function updateDashboardStats() {
+
+    const history = getHistory();
+
+    // Total Resume Scans
+    document.getElementById("totalScans").innerText =
+        history.length;
+
+    // Average Accuracy
+    let avgAccuracy = 0;
+
+    if (history.length > 0) {
+
+        avgAccuracy =
+            history.reduce(
+                (sum, item) =>
+                    sum + (item.semantic_score || 0),
+                0
+            ) / history.length;
+    }
+
+    document.getElementById("overallAccuracy").innerText =
+        avgAccuracy.toFixed(1) + "%";
+
+    // Latest Recommendation
+    document.getElementById(
+        "latestRecommendation"
+    ).innerText =
+        history.length > 0
+            ? (
+                history[0].recommendation ||
+                "Resume looks good. Follow the Recommendations the system given..!"
+            )
+            : "No recommendations available";
+}
+
+
+// ==========================
+// LOAD HISTORY TABLE
+// ==========================
+
+// function loadHistory() {
+
+//     const history = getHistory();
+
+//     document.getElementById(
+//         "historyTableBody"
+//     ).innerHTML =
+//         history
+//         .slice(0, 3)
+//         .map(item => `
+//             <tr>
+//                 <td>${item.role}</td>
+//                 <td>${item.ats_score}%</td>
+//                 <td>${item.semantic_score}%</td>
+//                 <td>${item.date}</td>
+//             </tr>
+//         `)
+//         .join("");
+// }
+
+async function loadHistory() {
+
+    const response = await fetch(
+        `/api/history/${currentUser.id}`
+    );
+
+    const history = await response.json();
+
+    document.getElementById(
+        "historyTableBody"
+    ).innerHTML =
+        history
+        .slice(0,3)
+        .map(item => `
+            <tr>
+                <td>${item.role}</td>
+                <td>${item.ats_score}%</td>
+                <td>${item.semantic_score}%</td>
+                <td>${item.scan_date}</td>
+            </tr>
+        `)
+        .join("");
+}
+
+// ==========================
+// LOAD USER DASHBOARD
+// ==========================
+
+fetch(`/api/user-dashboard/${currentUser.id}`)
+.then(response => response.json())
+.then(data => {
+
+    console.log(
+        "Dashboard Data:",
+        data
+    );
+
+})
+.catch(error => {
+
+    console.error(
+        "Dashboard Error:",
+        error
+    );
+
+});
+
+updateDashboardStats();
+loadHistory();
+
+
+// ==========================
+// RESUME ANALYSIS
+// ==========================
+
+document.getElementById("resumeForm")
+.addEventListener(
+"submit",
+async function(e) {
+
+    e.preventDefault();
+
+    const resumeFile =
+        document.getElementById(
+            "resumeFile"
+        ).files[0];
+
+    if (!resumeFile) {
+
+        alert(
+            "Please upload a resume"
+        );
+
+        return;
+    }
+
+    const formData = new FormData();
+    
+    formData.append(
+        "resume",
+        resumeFile
+    );
+
+    formData.append(
+        "job_title",
+        document.getElementById(
+            "jobTitle"
+        ).value
+    );
+
+    formData.append(
+        "job_description",
+        document.getElementById(
+            "jobDesc"
+        ).value
+    );
+
+    formData.append(
+    "user_id",
+    currentUser.id
+);
+    try {
+
+        document.getElementById(
+            "submitBtn"
+        ).disabled = true;
+
+        document.getElementById(
+            "submitBtn"
+        ).innerText =
+            "Analyzing...";
+
+        const response =
+        await fetch(
+            "/api/screen-resume",
+            {
+                method: "POST",
+                body: formData
+            }
+        );
+
+        if (!response.ok) {
+
+            const errorText =
+                await response.text();
+
+            console.error(errorText);
+
+            throw new Error(errorText);
+        }
+
+        const result =
+            await response.json();
+
+        console.log(
+            "Resume Result:",
+            result
+        );
+
+        localStorage.setItem(
+            "resumeResult",
+            JSON.stringify(result)
+        );
+
+        const history = getHistory();
+
+        const newScan = {
+
+            role:
+                document.getElementById(
+                    "jobTitle"
+                ).value,
+
+            ats_score:
+                parseFloat(
+                    result.ats_score || 0
+                ),
+
+            semantic_score:
+                Math.round(
+                    (result.semantic_match || 0) * 100
+                ),
+
+            recommendation:
+                result.recommendation ||
+                "Resume looks good",
+
+            date:
+                new Date()
+                .toLocaleDateString()
+        };
+
+        const lastScan = history[0];
+
+        if (
+            !lastScan ||
+            lastScan.role !== newScan.role ||
+            lastScan.ats_score !== newScan.ats_score
+        ) {
+            history.unshift(newScan);
+        }
+
+        localStorage.setItem(
+            "scanHistory",
+            JSON.stringify(history)
+        );
+
+        updateDashboardStats();
+        loadHistory();
+
+        window.location.href =
+            "/static/consumer/C-R.html";
+
+    } catch(error) {
+
+        console.error(error);
+
+        alert(
+            "Failed to analyze resume: "
+            + error.message
+        );
+
+    } finally {
+
+        document.getElementById(
+            "submitBtn"
+        ).disabled = false;
+
+        document.getElementById(
+            "submitBtn"
+        ).innerText =
+            "🚀 Screen My Resume";
+    }
+});
+
+// ==========================
+// LOGOUT
+// ==========================
+
+function logoutUser() {
+
+    localStorage.removeItem(
+        "currentUser"
+    );
+
+    localStorage.removeItem(
+        "bulkResult"
+    );
+
+    window.location.href =
+        "/";
+}
+
+
+function toggleSidebar(){
+
+    document
+    .getElementById("sidebar")
+    .classList
+    .toggle("collapsed");
+
+}
+
+function handleNewScan(){
+
+    document
+    .getElementById("scanModal")
+    .style
+    .display = "flex";
+
+}
+
+function closeModal(){
+
+    document
+    .getElementById("scanModal")
+    .style
+    .display = "none";
+
+}
+
+</script> -->
+
+<script>
+ // ==========================
+// USER PROFILE
+// ==========================
+
+const currentUser = JSON.parse(
+    localStorage.getItem("currentUser")
+);
+
+if (!currentUser) {
+    window.location.href = "/login";
+}
+
+document.getElementById("welcomeName").innerText =
+    `Welcome, ${currentUser.full_name}`;
+
+document.getElementById("profileName").innerText =
+    currentUser.full_name;
+
+document.getElementById("profileAvatar").innerText =
+    currentUser.full_name.charAt(0).toUpperCase();
+
+
+// ==========================
+// LOAD DASHBOARD STATS
+// ==========================
+
+async function updateDashboardStats() {
+
+    try {
+
+        const response = await fetch(
+            `/api/user-dashboard/${currentUser.id}`
+        );
+
+        const data = await response.json();
+
+        document.getElementById(
+            "totalScans"
+        ).innerText =
+            data.total_scans || 0;
+
+        document.getElementById(
+            "overallAccuracy"
+        ).innerText =
+            `${data.accuracy || 0}%`;
+
+        document.getElementById(
+            "latestRecommendation"
+        ).innerText =
+            data.recommendation ||
+            "No recommendations available";
+
+    } catch(error) {
+
+        console.error(
+            "Dashboard Error:",
+            error
+        );
+
+    }
+}
+
+
+// ==========================
+// LOAD HISTORY TABLE
+// ==========================
+
+async function loadHistory() {
+
+    try {
+
+        const response = await fetch(
+            `/api/history/${currentUser.id}`
+        );
+
+        const history =
+            await response.json();
+
+        document.getElementById(
+            "historyTableBody"
+        ).innerHTML =
+            history
+            .slice(0, 3)
+            .map(item => `
+                <tr>
+                    <td>${item.role}</td>
+                    <td>${item.ats_score}%</td>
+                    <td>${item.semantic_score}%</td>
+                    <td>${item.scan_date}</td>
+                </tr>
+            `)
+            .join("");
+
+    } catch(error) {
+
+        console.error(
+            "History Error:",
+            error
+        );
+
+    }
+}
+
+
+// ==========================
+// INITIAL LOAD
+// ==========================
+
+updateDashboardStats();
+loadHistory();   
+
+
+document.getElementById("resumeForm")
+.addEventListener(
+    "submit",
+    async function(e) {
+
+        e.preventDefault();
+
+        const resumeFile =
+            document.getElementById(
+                "resumeFile"
+            ).files[0];
+
+        if (!resumeFile) {
+
+            alert(
+                "Please upload a resume"
+            );
+
+            return;
+        }
+
+        const formData = new FormData();
+
+        formData.append(
+            "resume",
+            resumeFile
+        );
+
+        formData.append(
+            "job_title",
+            document.getElementById(
+                "jobTitle"
+            ).value
+        );
+
+        formData.append(
+            "job_description",
+            document.getElementById(
+                "jobDesc"
+            ).value
+        );
+
+        formData.append(
+            "user_id",
+            currentUser.id
+        );
+
+        try {
+
+            const submitBtn =
+                document.getElementById(
+                    "submitBtn"
+                );
+
+            submitBtn.disabled = true;
+
+            submitBtn.innerText =
+                "Analyzing...";
+
+            const response =
+                await fetch(
+                    "/api/screen-resume",
+                    {
+                        method: "POST",
+                        body: formData
+                    }
+                );
+
+            if (!response.ok) {
+
+                const errorText =
+                    await response.text();
+
+                console.error(
+                    errorText
+                );
+
+                throw new Error(
+                    errorText
+                );
+            }
+
+            const result =
+                await response.json();
+
+            console.log(
+                "Resume Result:",
+                result
+            );
+
+            // Store latest result only
+            localStorage.setItem(
+                "resumeResult",
+                JSON.stringify(result)
+            );
+
+            // Refresh dashboard data
+            await updateDashboardStats();
+            await loadHistory();
+
+            // Redirect to results page
+            window.location.href =
+                "/static/consumer/C-R.html";
+
+        }
+        catch(error) {
+
+            console.error(
+                error
+            );
+
+            alert(
+                "Failed to analyze resume: "
+                + error.message
+            );
+        }
+        finally {
+
+            const submitBtn =
+                document.getElementById(
+                    "submitBtn"
+                );
+
+            submitBtn.disabled = false;
+
+            submitBtn.innerText =
+                "🚀 Screen My Resume";
+        }
+    }
+);
+
+
+// ==========================
+// LOGOUT
+// ==========================
+
+function logoutUser() {
+
+    localStorage.removeItem(
+        "currentUser"
+    );
+
+    localStorage.removeItem(
+        "resumeResult"
+    );
+
+    localStorage.removeItem(
+        "bulkResult"
+    );
+
+    window.location.href = "/";
+}
+
+
+// ==========================
+// SIDEBAR
+// ==========================
+
+function toggleSidebar() {
+
+    document
+        .getElementById(
+            "sidebar"
+        )
+        .classList
+        .toggle(
+            "collapsed"
+        );
+}
+
+
+// ==========================
+// NEW SCAN MODAL
+// ==========================
+
+function handleNewScan() {
+
+    document
+        .getElementById(
+            "scanModal"
+        )
+        .style
+        .display = "flex";
+}
+
+function closeModal() {
+
+    document
+        .getElementById(
+            "scanModal"
+        )
+        .style
+        .display = "none";
+}
+
+
+</script>
+</body>
+</html>

@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Consumer Dashboard - AI Resume Screening</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 30px 20px; }
+        header { text-align: center; color: white; margin-bottom: 40px; }
+        header h1 { font-size: 2.5em; margin-bottom: 10px; }
+        .upload-card { background: white; border-radius: 20px; padding: 35px; max-width: 650px; margin: 0 auto 50px; box-shadow: 0 25px 60px rgba(0,0,0,0.15); }
+        .form-group { margin-bottom: 22px; }
+        .form-group label { display: block; margin-bottom: 8px; font-weight: 600; color: #333; }
+        .form-group input, .form-group textarea { width: 100%; padding: 14px 18px; border: 2px solid #e1e5e9; border-radius: 12px; font-size: 16px; transition: all 0.3s; }
+        .form-group input:focus, .form-group textarea:focus { outline: none; border-color: #667eea; box-shadow: 0 0 0 4px rgba(102,126,234,0.15); }
+        button { width: 100%; padding: 18px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; border-radius: 12px; font-size: 18px; font-weight: 600; cursor: pointer; transition: transform 0.2s; }
+        button:hover { transform: translateY(-3px); box-shadow: 0 15px 35px rgba(102,126,234,0.4); }
+        .results-section { display: none; }
+        .score-section { text-align: center; margin-bottom: 40px; }
+        .score-circle { width: 220px; height: 220px; border-radius: 50%; margin: 0 auto 25px; display: flex; align-items: center; justify-content: center; position: relative; }
+        .score-circle::before { content: ''; position: absolute; width: 180px; height: 180px; background: white; border-radius: 50%; }
+        .score-value { font-size: 3.5em; font-weight: 800; color: #333; z-index: 1; position: relative; }
+        .score-label { font-size: 1.2em; color: rgba(255,255,255,0.9); }
+        .grid-layout { display: grid; grid-template-columns: repeat(auto-fit, minmax(450px, 1fr)); gap: 25px; margin-bottom: 40px; }
+        .card { background: white; padding: 28px; border-radius: 16px; box-shadow: 0 15px 40px rgba(0,0,0,0.1); }
+        .card h3 { margin-bottom: 20px; color: #333; font-size: 1.3em; }
+        .skills-list { list-style: none; }
+        .skills-list li { padding: 14px 18px; margin-bottom: 12px; border-radius: 10px; border-left: 4px solid; }
+        .matched { background: #d1fae5; border-left-color: #10b981; }
+        .missing { background: #fee2e2; border-left-color: #ef4444; }
+        .suggestions { list-style: none; }
+        .suggestions li { padding: 16px; margin-bottom: 14px; background: linear-gradient(90deg, #667eea10, #764ba210); border-left: 4px solid #667eea; border-radius: 8px; }
+        .loading { text-align: center; color: white; padding: 40px; display: none; }
+        .loading.show { display: block; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>👤 Consumer Dashboard</h1>
+            <p>Upload your resume and get instant ATS analysis</p>
+        </header>
+
+        <div class="upload-card">
+            <form id="resumeForm">
+                <div class="form-group">
+                    <label>Job Title</label>
+                    <input type="text" id="jobTitle" placeholder="e.g., Software Engineer" required>
+                </div>
+                <div class="form-group">
+                    <label>Job Description</label>
+                    <textarea id="jobDesc" rows="5" placeholder="Paste the job description here..." required></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Resume (PDF or DOCX)</label>
+                    <input type="file" id="resumeFile" accept=".pdf,.docx" required>
+                </div>
+                <button type="submit" id="submitBtn">🚀 Screen My Resume</button>
+            </form>
+        </div>
+
+        <div class="loading" id="loading">
+            <h2>⏳ Analyzing your resume...</h2>
+            <p>This may take a few seconds</p>
+        </div>
+
+        <div class="results-section" id="resultsSection">
+            <div class="score-section">
+                <div class="score-circle" id="scoreCircle">
+                    <span class="score-value" id="atsScore">--</span>
+                </div>
+                <p class="score-label">Your ATS Score</p>
+            </div>
+
+            <div class="grid-layout">
+                <div class="card">
+                    <h3>✅ Matched Skills</h3>
+                    <ul class="skills-list matched" id="matchedSkills"></ul>
+                </div>
+                <div class="card">
+                    <h3>❌ Missing Skills</h3>
+                    <ul class="skills-list missing" id="missingSkills"></ul>
+                </div>
+            </div>
+
+            <div class="card" style="margin-bottom: 40px;">
+                <h3>💡 AI Improvement Suggestions</h3>
+                <ul class="suggestions" id="suggestions"></ul>
+            </div>
+
+            <div class="grid-layout">
+                <div class="card">
+                    <h3>📈 Component Breakdown</h3>
+                    <canvas id="componentChart"></canvas>
+                </div>
+                <div class="card">
+                    <h3>🎯 Skills Match</h3>
+                    <canvas id="skillsChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+    document.getElementById('resumeForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        
+        const formData = new FormData();
+        formData.append('resume', document.getElementById('resumeFile').files[0]);
+        formData.append('job_title', document.getElementById('jobTitle').value);
+        formData.append('job_description', document.getElementById('jobDesc').value);
+
+        document.getElementById('resumeForm').style.display = 'none';
+        document.getElementById('loading').classList.add('show');
+
+        try {
+            const response = await fetch('http://localhost:8000/api/screen-resume', {
+                method: 'POST',
+                body: formData
+            });
+
+            if (!response.ok) throw new Error('Screening failed');
+
+            const result = await response.json();
+            displayResults(result);
+        } catch (error) {
+            alert('Error: ' + error.message);
+            location.reload();
+        }
+    });
+
+    function displayResults(data) {
+        document.getElementById('loading').classList.remove('show');
+        document.getElementById('resultsSection').style.display = 'block';
+        document.getElementById('resultsSection').scrollIntoView({ behavior: 'smooth' });
+
+        // Score circle
+        const score = data.ats_score;
+        document.getElementById('atsScore').textContent = score;
+        const circle = document.getElementById('scoreCircle');
+        const color = score >= 80 ? '#10b981' : score >= 60 ? '#f59e0b' : '#ef4444';
+        circle.style.background = `conic-gradient(${color} 0deg ${score * 3.6}deg, #e1e5e9 ${score * 3.6}deg 360deg)`;
+
+        // Skills
+        const skills = data.skills || {};
+        document.getElementById('matchedSkills').innerHTML = (skills.extracted_skills || []).slice(0, 8)
+            .map(s => `<li>${s}</li>`).join('') || '<li>No skills detected</li>';
+        document.getElementById('missingSkills').innerHTML = (data.missing_skills || [])
+            .map(s => `<li>${s}</li>`).join('') || '<li>All required skills found!</li>';
+
+        // Suggestions
+        document.getElementById('suggestions').innerHTML = (data.improvement_suggestions || [])
+            .map(s => `<li>${s}</li>`).join('');
+
+        // Charts
+        const scores = data.component_scores || {S:0, M:0, E:0, D:0, C:0, P:0};
+        new Chart(document.getElementById('componentChart'), {
+            type: 'doughnut',
+            data: {
+                labels: ['Skills', 'Semantic', 'Experience', 'Degree', 'Certs', 'Projects'],
+                datasets: [{
+                    data: [scores.S, scores.M, scores.E, scores.D, scores.C, scores.P],
+                    backgroundColor: ['#4ade80', '#3b82f6', '#f59e0b', '#10b981', '#8b5cf6', '#ef4444']
+                }]
+            },
+            options: { responsive: true, plugins: { legend: { position: 'bottom' } } }
+        });
+
+        new Chart(document.getElementById('skillsChart'), {
+            type: 'bar',
+            data: {
+                labels: ['Skill Match', 'Semantic Match'],
+                datasets: [{
+                    data: [(data.skill_match || 0) * 100, (data.semantic_match || 0) * 100],
+                    backgroundColor: ['#4ade80', '#3b82f6']
+                }]
+            },
+            options: { responsive: true, scales: { y: { beginAtZero: true, max: 100 } } }
+        });
+    }
+    </script>
+</body>
+</html>

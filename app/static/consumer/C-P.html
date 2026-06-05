@@ -1,0 +1,1916 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>
+        Profile • JobAI
+    </title>
+
+    <link
+        rel="stylesheet"
+        href="profile.css"
+    >
+
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+    >
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Arial,sans-serif;
+}
+
+body{
+
+    background:
+    linear-gradient(
+        135deg,
+        #021b26,
+        #062432,
+        #0b3142
+    );
+
+    color:white;
+
+    overflow-x:hidden;
+
+    position:relative;
+}
+
+/* BACKGROUND GLOW */
+
+body::before{
+
+    content:"";
+
+    position:fixed;
+
+    width:500px;
+    height:500px;
+
+    border-radius:50%;
+
+    background:
+    radial-gradient(
+        rgba(67,233,123,0.12),
+        transparent 70%
+    );
+
+    top:-180px;
+    left:-150px;
+
+    z-index:-1;
+}
+
+body::after{
+
+    content:"";
+
+    position:fixed;
+
+    width:450px;
+    height:450px;
+
+    border-radius:50%;
+
+    background:
+    radial-gradient(
+        rgba(139,92,246,0.14),
+        transparent 70%
+    );
+
+    bottom:-180px;
+    right:-150px;
+
+    z-index:-1;
+}
+
+/* MAIN */
+
+.main-layout{
+
+    display:flex;
+
+    min-height:100vh;
+}
+
+/* SIDEBAR */
+
+.sidebar{
+
+    width:280px;
+
+    background:
+    linear-gradient(
+        180deg,
+        rgba(7,25,38,0.96),
+        rgba(5,18,28,0.98)
+    );
+
+    border-right:
+    1px solid rgba(255,255,255,0.08);
+
+    padding:25px 18px;
+
+    position:sticky;
+
+    top:0;
+
+    height:100vh;
+
+    overflow:hidden;
+
+    backdrop-filter:blur(20px);
+
+    box-shadow:
+    10px 0 30px rgba(0,0,0,0.25);
+
+    transition:0.3s;
+}
+
+/* COLLAPSED */
+
+.sidebar.collapsed{
+
+    width:90px;
+}
+
+.sidebar.collapsed .logo-text{
+
+    display:none;
+}
+
+.sidebar.collapsed .sidebar-menu li span{
+
+    display:none;
+}
+
+.sidebar.collapsed .sidebar-menu li{
+
+    justify-content:center;
+}
+
+/* LOGO */
+
+.logo-section{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:18px;
+
+    margin-bottom:40px;
+}
+
+.menu-btn{
+
+    width:46px;
+
+    height:46px;
+
+    border:none;
+
+    border-radius:16px;
+
+    background:
+    linear-gradient(
+        135deg,
+        #43e97b,
+        #38f9d7,
+        #8b5cf6
+    );
+
+    color:#021b26;
+
+    cursor:pointer;
+
+    font-size:18px;
+
+    box-shadow:
+    0 10px 25px rgba(67,233,123,0.2);
+}
+
+.logo-text{
+
+    font-size:28px;
+
+    font-weight:bold;
+
+    background:
+    linear-gradient(
+        135deg,
+        #43e97b,
+        #38f9d7,
+        #8b5cf6
+    );
+
+    -webkit-background-clip:text;
+
+    -webkit-text-fill-color:transparent;
+}
+
+/* MENU */
+
+.sidebar-menu{
+
+    list-style:none;
+}
+
+.sidebar-menu li{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:15px;
+
+    padding:16px;
+
+    border-radius:16px;
+
+    cursor:pointer;
+
+    margin-bottom:12px;
+
+    transition:0.35s ease;
+
+    color:#dbe7ec;
+}
+
+.sidebar-menu li:hover{
+
+    background:
+    rgba(255,255,255,0.08);
+
+    transform:translateX(6px);
+}
+
+.sidebar-menu li.active{
+
+    background:
+    linear-gradient(
+        135deg,
+        #43e97b,
+        #38f9d7,
+        #8b5cf6
+    );
+
+    color:#021b26;
+
+    font-weight:bold;
+
+    box-shadow:
+    0 10px 25px rgba(67,233,123,0.18);
+}
+
+/* CONTENT */
+
+.content-area{
+
+    flex:1;
+
+    padding:35px;
+}
+
+/* TOPBAR */
+
+.topbar{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    margin-bottom:35px;
+}
+
+.topbar h1{
+
+    font-size:42px;
+
+    margin-bottom:8px;
+}
+
+.topbar p{
+
+    color:#b8c8cf;
+}
+
+
+/* LAYOUT */
+
+.dashboard-shell{
+
+    display:flex;
+
+    min-height:100vh;
+}
+
+/* SIDEBAR */
+
+.dashboard-sidebar{
+
+    width:280px;
+
+    background:
+    linear-gradient(
+        180deg,
+        rgba(7,25,38,0.96),
+        rgba(5,18,28,0.98)
+    );
+
+    border-right:
+    1px solid rgba(255,255,255,0.08);
+
+    padding:30px 20px;
+
+    display:flex;
+
+    flex-direction:column;
+
+    justify-content:space-between;
+
+    backdrop-filter:blur(20px);
+
+    box-shadow:
+    10px 0 30px rgba(0,0,0,0.25);
+}
+
+/* BRAND */
+
+.sidebar-brand{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:15px;
+
+    margin-bottom:40px;
+}
+
+.app-logo-circle{
+
+    width:60px;
+
+    height:60px;
+
+    border-radius:18px;
+
+    background:
+    linear-gradient(
+        135deg,
+        #43e97b,
+        #38f9d7,
+        #8b5cf6
+    );
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    color:#021b26;
+
+    font-size:24px;
+
+    font-weight:bold;
+
+    box-shadow:
+    0 10px 25px rgba(67,233,123,0.2);
+}
+
+.sidebar-brand-title span{
+
+    display:block;
+
+    color:#b8c8cf;
+
+    font-size:14px;
+}
+
+.sidebar-brand-title strong{
+
+    font-size:20px;
+
+    background:
+    linear-gradient(
+        135deg,
+        #43e97b,
+        #38f9d7,
+        #8b5cf6
+    );
+
+    -webkit-background-clip:text;
+
+    -webkit-text-fill-color:transparent;
+}
+
+/* NAV */
+
+.sidebar-nav{
+
+    list-style:none;
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:12px;
+}
+
+.sidebar-nav li a{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:14px;
+
+    text-decoration:none;
+
+    padding:16px 18px;
+
+    border-radius:16px;
+
+    color:#dbe7ec;
+
+    transition:0.35s ease;
+}
+
+.sidebar-nav li a:hover{
+
+    background:
+    rgba(255,255,255,0.08);
+
+    transform:translateX(6px);
+}
+
+.sidebar-nav li a.active{
+
+    background:
+    linear-gradient(
+        135deg,
+        #43e97b,
+        #38f9d7,
+        #8b5cf6
+    );
+
+    color:#021b26;
+
+    font-weight:bold;
+
+    box-shadow:
+    0 10px 25px rgba(67,233,123,0.18);
+}
+
+.icon{
+
+    width:22px;
+
+    text-align:center;
+}
+
+/* FOOTER */
+
+.sidebar-footer{
+
+    margin-top:40px;
+
+    text-align:center;
+}
+
+/* BUTTON OUTLINE */
+
+.btn-outline{
+
+    width:100%;
+
+    height:54px;
+
+    border:none;
+
+    border-radius:16px;
+
+    background:
+    rgba(255,255,255,0.06);
+
+    border:
+    1px solid rgba(255,255,255,0.08);
+
+    color:#43e97b;
+
+    font-weight:bold;
+
+    cursor:pointer;
+
+    transition:0.35s ease;
+
+    backdrop-filter:blur(18px);
+}
+
+.btn-outline:hover{
+
+    background:
+    linear-gradient(
+        135deg,
+        #43e97b,
+        #38f9d7,
+        #8b5cf6
+    );
+
+    color:#021b26;
+}
+
+.sidebar-footer small{
+
+    display:block;
+
+    margin-top:15px;
+
+    color:#b8c8cf;
+}
+
+/* MAIN */
+
+.dashboard-main{
+
+    flex:1;
+
+    padding:40px;
+}
+
+/* TOPBAR */
+
+.dashboard-topbar{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    margin-bottom:40px;
+}
+
+.topbar-left h1{
+
+    font-size:40px;
+
+    margin-bottom:8px;
+}
+
+.topbar-left p{
+
+    color:#b8c8cf;
+}
+
+/* PROFILE CHIP */
+
+.profile-chip{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:12px;
+
+    background:
+    rgba(255,255,255,0.06);
+
+    border:
+    1px solid rgba(255,255,255,0.08);
+
+    padding:10px 16px;
+
+    border-radius:18px;
+
+    backdrop-filter:blur(18px);
+
+    cursor:pointer;
+}
+
+.profile-avatar{
+
+    width:42px;
+
+    height:42px;
+
+    border-radius:50%;
+
+    background:
+    linear-gradient(
+        135deg,
+        #43e97b,
+        #38f9d7,
+        #8b5cf6
+    );
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    color:#021b26;
+
+    font-weight:bold;
+}
+
+/* CARD */
+
+.card{
+
+    background:
+    linear-gradient(
+        145deg,
+        rgba(255,255,255,0.06),
+        rgba(255,255,255,0.03)
+    );
+
+    border:
+    1px solid rgba(255,255,255,0.08);
+
+    border-radius:30px;
+
+    padding:40px;
+
+    backdrop-filter:blur(20px);
+
+    box-shadow:
+    0 15px 40px rgba(0,0,0,0.2);
+}
+
+/* PAGE HEADER */
+
+.page-header{
+
+    margin-bottom:35px;
+}
+
+.page-header h2{
+
+    font-size:32px;
+
+    margin-bottom:8px;
+}
+
+.text-muted{
+
+    color:#b8c8cf;
+}
+
+/* PROFILE LAYOUT */
+
+.profile-layout{
+
+    display:grid;
+
+    grid-template-columns:320px 1fr;
+
+    gap:50px;
+}
+
+/* AVATAR */
+
+.profile-avatar-lg{
+
+    width:160px;
+
+    height:160px;
+
+    border-radius:50%;
+
+    background:
+    linear-gradient(
+        135deg,
+        #43e97b,
+        #38f9d7,
+        #8b5cf6
+    );
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    color:#021b26;
+
+    font-size:56px;
+
+    font-weight:bold;
+
+    margin-bottom:25px;
+
+    box-shadow:
+    0 20px 50px rgba(67,233,123,0.18);
+}
+
+/* META */
+
+.profile-meta{
+
+    color:#dbe7ec;
+
+    line-height:2;
+}
+
+/* BUTTON SOFT */
+
+.btn-soft{
+
+    display:block;
+
+    width:100%;
+
+    padding:14px;
+
+    border-radius:16px;
+
+    background:
+    rgba(255,255,255,0.06);
+
+    border:
+    1px solid rgba(255,255,255,0.08);
+
+    color:#43e97b;
+
+    text-align:center;
+
+    font-weight:bold;
+
+    cursor:pointer;
+
+    transition:0.35s ease;
+
+    backdrop-filter:blur(18px);
+}
+
+.btn-soft:hover{
+
+    background:
+    linear-gradient(
+        135deg,
+        #43e97b,
+        #38f9d7,
+        #8b5cf6
+    );
+
+    color:#021b26;
+}
+
+/* DANGER */
+
+.btn-danger{
+
+    width:100%;
+
+    height:54px;
+
+    border:none;
+
+    border-radius:16px;
+
+    background:
+    rgba(239,68,68,0.12);
+
+    color:#ff6b6b;
+
+    font-weight:bold;
+
+    cursor:pointer;
+
+    transition:0.35s ease;
+}
+
+.btn-danger:hover{
+
+    background:#ff4d4d;
+
+    color:white;
+}
+
+/* FORM */
+
+.form-grid{
+
+    display:grid;
+
+    grid-template-columns:1fr 1fr;
+
+    gap:25px;
+}
+
+.form-group{
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:12px;
+}
+
+.form-group:last-child{
+
+    grid-column:span 2;
+}
+
+/* LABEL */
+
+.form-label{
+
+    font-size:15px;
+
+    color:#dbe7ec;
+
+    font-weight:600;
+}
+
+/* INPUT */
+
+.form-control,
+.form-select{
+
+    width:100%;
+
+    height:58px;
+
+    border:
+    1px solid rgba(255,255,255,0.08);
+
+    border-radius:16px;
+
+    padding:0 18px;
+
+    outline:none;
+
+    font-size:15px;
+
+    background:
+    rgba(255,255,255,0.05);
+
+    color:white;
+
+    transition:0.35s ease;
+
+    backdrop-filter:blur(18px);
+}
+
+.form-control:focus,
+.form-select:focus{
+
+    border-color:#43e97b;
+
+    box-shadow:
+    0 0 0 4px rgba(67,233,123,0.08);
+}
+
+/* TEXTAREA */
+
+textarea.form-control{
+
+    min-height:120px;
+
+    padding-top:18px;
+
+    resize:none;
+}
+
+/* PRIMARY BUTTON */
+
+.btn-primary{
+
+    width:100%;
+
+    height:58px;
+
+    border:none;
+
+    border-radius:18px;
+
+    background:
+    linear-gradient(
+        135deg,
+        #43e97b,
+        #38f9d7,
+        #8b5cf6
+    );
+
+    color:#021b26;
+
+    font-size:16px;
+
+    font-weight:bold;
+
+    cursor:pointer;
+
+    transition:0.35s ease;
+
+    box-shadow:
+    0 10px 25px rgba(67,233,123,0.18);
+}
+
+.btn-primary:hover{
+
+    transform:
+    translateY(-3px)
+    scale(1.01);
+}
+
+/* RESPONSIVE */
+
+@media(max-width:1100px){
+
+    .profile-layout{
+
+        grid-template-columns:1fr;
+    }
+
+    .form-grid{
+
+        grid-template-columns:1fr;
+    }
+
+    .form-group:last-child{
+
+        grid-column:span 1;
+    }
+}
+
+@media(max-width:850px){
+
+    .dashboard-sidebar{
+
+        display:none;
+    }
+
+    .dashboard-main{
+
+        padding:25px;
+    }
+
+    .dashboard-topbar{
+
+        flex-direction:column;
+
+        align-items:flex-start;
+
+        gap:20px;
+    }
+
+    .topbar-left h1{
+
+        font-size:34px;
+    }
+}
+
+/* MODAL */
+
+.scan-modal{
+
+    position:fixed;
+
+    inset:0;
+
+    background:rgba(0,0,0,0.55);
+
+    display:none;
+
+    justify-content:center;
+
+    align-items:center;
+
+    z-index:999;
+}
+
+/* MODAL CONTENT */
+
+.modal-content{
+
+    width:90%;
+
+    max-width:1100px;
+
+    background:
+    linear-gradient(
+        145deg,
+        #062432,
+        #021b26
+    );
+
+    border:
+    1px solid rgba(255,255,255,0.08);
+
+    border-radius:30px;
+
+    padding:30px;
+
+    color:white;
+}
+
+/* MODAL HEADER */
+
+.modal-header{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    margin-bottom:25px;
+}
+
+.modal-header button{
+
+    background:none;
+
+    border:none;
+
+    font-size:28px;
+
+    color:white;
+
+    cursor:pointer;
+}
+
+/* MODAL FOOTER */
+
+.modal-footer{
+
+    display:flex;
+
+    justify-content:flex-end;
+
+    align-items:center;
+
+    gap:20px;
+
+    margin-top:25px;
+}
+
+/* UPGRADE BUTTON */
+
+.upgrade-btn{
+
+    background:
+    linear-gradient(
+        135deg,
+        #43e97b,
+        #38f9d7,
+        #8b5cf6
+    );
+
+    color:#021b26;
+
+    border:none;
+
+    padding:14px 20px;
+
+    border-radius:14px;
+
+    font-weight:bold;
+
+    cursor:pointer;
+
+    transition:0.3s ease;
+}
+
+.upgrade-btn:hover{
+
+    transform:
+    translateY(-3px)
+    scale(1.01);
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="main-layout">
+
+    <!-- SIDEBAR -->
+
+    <div class="sidebar" id="sidebar">
+
+        <!-- LOGO -->
+
+        <div class="logo-section">
+
+            <button
+                class="menu-btn"
+                onclick="toggleSidebar()"
+            >
+
+                <i class="fa-solid fa-bars"></i>
+
+            </button>
+
+            <h2 class="logo-text">
+
+                JobAI
+
+            </h2>
+
+        </div>
+
+        <!-- MENU -->
+
+        <ul class="sidebar-menu">
+
+            <!-- NEW SCAN -->
+
+            <!-- <li
+                class="new-scan-btn"
+                onclick="handleNewScan()"
+            >
+
+                <i class="fa-solid fa-plus"></i>
+
+                <span>
+
+                    New Scan
+
+                </span>
+
+            </li> -->
+
+            <!-- DASHBOARD -->
+
+            <li onclick="window.location.href='/C-D'">
+
+                <i class="fa-solid fa-house"></i>
+
+                <span>
+
+                    Dashboard
+
+                </span>
+
+            </li>
+
+            <!-- HISTORY -->
+
+            <li onclick="window.location.href='/C-H'">
+
+                <i class="fa-solid fa-clock-rotate-left"></i>
+
+                <span>
+
+                    History
+
+                </span>
+
+            </li>
+
+            <!-- ANALYTICS -->
+
+            <!-- <li onclick="window.location.href='/C-Analytics'">
+
+                <i class="fa-solid fa-chart-simple"></i>
+
+                <span>
+
+                    Analytics
+
+                </span>
+
+            </li> -->
+
+            <!-- PROFILE -->
+
+            <li class="active">
+
+                <i class="fa-solid fa-user"></i>
+
+                <span>
+
+                    Profile
+
+                </span>
+
+            </li>
+
+            <!-- LOGOUT -->
+
+            <li onclick="logoutUser()">
+
+                <i class="fa-solid fa-right-from-bracket"></i>
+
+                <span>
+
+                    Logout
+
+                </span>
+
+            </li>
+
+        </ul>
+
+    </div>
+
+    <!-- MAIN -->
+
+    <main class="dashboard-main">
+
+        <!-- TOPBAR -->
+
+        <header class="dashboard-topbar">
+
+            <div class="topbar-left">
+
+                <h1>
+
+                    Your Profile
+
+                </h1>
+
+                <p>
+
+                    Manage your personal
+                    and professional information
+
+                </p>
+
+            </div>
+
+            <!-- PROFILE CHIP -->
+
+            <div class="profile-chip">
+
+                <div class="profile-avatar" id="profileAvatar">
+
+                    
+
+                </div>
+
+                <span id="profileName">
+
+                
+                </span>
+
+            </div>
+
+        </header>
+
+        <!-- PROFILE CARD -->
+
+        <section class="card">
+
+            <div class="page-header">
+
+                <h2>
+
+                    Profile Information
+
+                </h2>
+
+                <p class="text-muted">
+
+                    Update your details
+                    and preferences
+
+                </p>
+
+            </div>
+
+            <div class="profile-layout">
+
+                <!-- LEFT -->
+
+                <div>
+
+    <img
+        id="profileImage"
+        src="/static/default-avatar.png"
+        class="profile-avatar-lg"
+        style="
+            object-fit:cover;
+            border-radius:50%;
+        "
+    >
+
+    <div class="profile-meta">
+
+        <div>
+            <strong id="displayName">
+            </strong>
+        </div>
+
+        <div id="displayEmail">
+        </div>
+
+        <div id="displayPhone">
+        </div>
+
+    </div>
+
+    <div
+        style="
+            margin-top:25px;
+            display:flex;
+            flex-direction:column;
+            gap:14px;
+        "
+    >
+
+        <label
+            for="profilePhoto"
+            class="btn-soft"
+            style="
+                cursor:pointer;
+                text-align:center;
+            "
+        >
+
+            Upload Photo
+
+        </label>
+
+        <input
+            type="file"
+            id="profilePhoto"
+            accept="image/*"
+            hidden
+        >
+
+        <button
+            type="button"
+            class="btn-danger"
+            onclick="removeProfilePhoto()"
+        >
+
+            Remove Photo
+
+        </button>
+
+    </div>
+
+</div>
+
+                <!-- RIGHT -->
+
+                <form
+    class="form-grid"
+    onsubmit="saveProfile(event)"
+>
+
+                    <!-- FULL NAME -->
+
+                    <div class="form-group">
+
+                        <label class="form-label">
+
+                            First Name
+
+                        </label>
+
+                        <input
+                            id="first_name"
+                            name="first_name"
+                            class="form-control"
+                            required
+                        >
+
+                    </div>
+
+                    <!-- LAST NAME -->
+
+                    <div class="form-group">
+
+                        <label class="form-label">
+
+                            Last Name
+
+                        </label>
+
+                        <input
+                            id="last_name"
+                            name="last_name"
+                            class="form-control"
+                            
+                            required
+                        >
+
+                    </div>
+
+                    <!-- EMAIL -->
+
+                    <div class="form-group">
+
+                        <label class="form-label">
+
+                            Email Address
+
+                        </label>
+
+                        <input
+                            name="email"
+                            id="email"
+                            class="form-control"
+                           
+                            required
+                        >
+
+                    </div>
+
+                    <!-- PHONE -->
+
+                    <div class="form-group">
+
+                        <label class="form-label">
+
+                            Mobile Number
+
+                        </label>
+
+                        <input
+                            name="phone"
+                            id="phone"
+                            class="form-control"
+                        
+                        >
+
+                    </div>
+
+                    <!-- SAVE -->
+
+                    <div class="form-group">
+
+                        <button
+                            type="submit"
+                            class="btn-primary"
+                        >
+
+                            Save Changes
+
+                        </button>
+
+                    </div>
+
+                </form>
+
+            </div>
+
+        </section>
+
+    </main>
+
+</div>
+
+<!-- SCAN MODAL -->
+
+<div class="scan-modal" id="scanModal">
+
+    <div class="modal-content">
+
+        <div class="modal-header">
+
+            <h2>
+
+                New Scan
+
+            </h2>
+
+            <button onclick="closeModal()">
+
+                ✕
+
+            </button>
+
+        </div>
+
+        <!-- FORM -->
+
+        <form
+            method="POST"
+            action="/analyze-resume"
+            enctype="multipart/form-data"
+        >
+
+            <div class="scan-grid">
+
+                <!-- RESUME -->
+
+                <div class="scan-box">
+
+                    <div class="scan-header">
+
+                        <h3>
+
+                            Step 1:
+                            Upload Resume
+
+                        </h3>
+
+                    </div>
+
+                    <div class="upload-area">
+
+                        <i class="fa-solid fa-cloud-arrow-up"></i>
+
+                        <p>
+
+                            Drag & Drop or Upload Resume
+
+                        </p>
+
+                        <input
+                            type="file"
+                            name="resume"
+                            required
+                        >
+
+                    </div>
+
+                </div>
+
+                <!-- JD -->
+
+                <div class="scan-box">
+
+                    <div class="scan-header">
+
+                        <h3>
+
+                            Step 2:
+                            Paste Job Description
+
+                        </h3>
+
+                    </div>
+
+                    <textarea
+                        name="job_description"
+                        placeholder="Paste job description..."
+                        required
+                    ></textarea>
+
+                </div>
+
+            </div>
+
+            <!-- FOOTER -->
+
+            <div class="modal-footer">
+
+                <button
+                    type="button"
+                    class="upgrade-btn"
+                >
+
+                    Available scans:
+                    {{ available_scans }}
+
+                </button>
+
+                <button
+                    type="submit"
+                    class="analyze-btn"
+                >
+
+                    Scan Resume
+
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+<script>
+
+function toggleSidebar(){
+
+    document
+    .getElementById("sidebar")
+    .classList
+    .toggle("collapsed");
+
+}
+
+function handleNewScan(){
+
+    document
+    .getElementById("scanModal")
+    .style
+    .display = "flex";
+
+}
+
+function closeModal(){
+
+    document
+    .getElementById("scanModal")
+    .style
+    .display = "none";
+
+}
+
+</script>
+<script>
+
+// ==========================
+// CURRENT USER
+// ==========================
+
+const currentUser = JSON.parse(
+    localStorage.getItem(
+        "currentUser"
+    )
+);
+
+if (!currentUser) {
+
+    window.location.href =
+        "/login";
+}
+
+
+// ==========================
+// PROFILE HEADER
+// ==========================
+
+document.getElementById(
+    "profileName"
+).innerText =
+    currentUser.full_name || "User";
+
+document.getElementById(
+    "displayName"
+).innerText =
+    currentUser.full_name || "User";
+
+document.getElementById(
+    "displayEmail"
+).innerText =
+    currentUser.email || "";
+
+document.getElementById(
+    "displayPhone"
+).innerText =
+    currentUser.phone ||
+    "Phone not added";
+
+
+// ==========================
+// PROFILE AVATAR
+// ==========================
+
+document.getElementById(
+    "profileAvatar"
+).innerText =
+(
+    currentUser.full_name || "U"
+)
+.charAt(0)
+.toUpperCase();
+
+
+// ==========================
+// LOAD FORM DATA
+// ==========================
+
+const names =
+(
+    currentUser.full_name || ""
+)
+.trim()
+.split(" ");
+
+document.getElementById(
+    "first_name"
+).value =
+    names[0] || "";
+
+document.getElementById(
+    "last_name"
+).value =
+    names.slice(1).join(" ") || "";
+
+document.getElementById(
+    "email"
+).value =
+    currentUser.email || "";
+
+document.getElementById(
+    "phone"
+).value =
+    currentUser.phone || "";
+
+
+// ==========================
+// LOAD PROFILE PHOTO
+// ==========================
+
+if (
+    currentUser.profile_photo
+) {
+
+    document.getElementById(
+        "profileImage"
+    ).src =
+    currentUser.profile_photo;
+}
+
+
+// ==========================
+// PHOTO PREVIEW
+// ==========================
+
+document
+.getElementById(
+    "profilePhoto"
+)
+.addEventListener(
+    "change",
+    function(event){
+
+        const file =
+        event.target.files[0];
+
+        if(file){
+
+            const reader =
+            new FileReader();
+
+            reader.onload =
+            function(e){
+
+                document
+                .getElementById(
+                    "profileImage"
+                )
+                .src =
+                e.target.result;
+            };
+
+            reader.readAsDataURL(
+                file
+            );
+        }
+    }
+);
+
+
+// ==========================
+// REMOVE PHOTO
+// ==========================
+
+function removeProfilePhoto(){
+
+    document
+    .getElementById(
+        "profileImage"
+    )
+    .src =
+    "/static/default-avatar.png";
+
+    document
+    .getElementById(
+        "profilePhoto"
+    )
+    .value = "";
+}
+
+
+// ==========================
+// SAVE PROFILE
+// ==========================
+
+async function saveProfile(event){
+
+    event.preventDefault();
+
+    const formData =
+    new FormData();
+
+    formData.append(
+        "user_id",
+        currentUser.id
+    );
+
+    formData.append(
+        "full_name",
+        document.getElementById(
+            "first_name"
+        ).value.trim()
+        + " " +
+        document.getElementById(
+            "last_name"
+        ).value.trim()
+    );
+
+    formData.append(
+        "email",
+        document.getElementById(
+            "email"
+        ).value
+    );
+
+    formData.append(
+        "phone",
+        document.getElementById(
+            "phone"
+        ).value
+    );
+
+    const photo =
+    document.getElementById(
+        "profilePhoto"
+    ).files[0];
+
+    if(photo){
+
+        formData.append(
+            "photo",
+            photo
+        );
+    }
+
+    try{
+
+        const response =
+        await fetch(
+            "/api/update-profile",
+            {
+                method: "POST",
+                body: formData
+            }
+        );
+
+        const data =
+        await response.json();
+
+        if(!response.ok){
+
+            throw new Error(
+                data.detail ||
+                "Failed to update profile"
+            );
+        }
+
+        localStorage.setItem(
+            "currentUser",
+            JSON.stringify(
+                data.user
+            )
+        );
+
+        alert(
+            "Profile updated successfully!"
+        );
+
+        location.reload();
+
+    }
+    catch(error){
+
+        console.error(
+            error
+        );
+
+        alert(
+            error.message
+        );
+    }
+}
+
+function logoutUser() {
+
+    localStorage.removeItem(
+        "currentUser"
+    );
+
+    localStorage.removeItem(
+        "bulkResult"
+    );
+
+    window.location.href =
+        "/";
+}
+</script>
+</body>
+
+</html>

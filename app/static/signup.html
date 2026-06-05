@@ -1,0 +1,1331 @@
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up - AI Resume Screening</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; display: flex; align-items: center; justify-content: center; }
+        .container { width: 100%; max-width: 480px; padding: 20px; }
+        .signup-card { background: white; padding: 40px; border-radius: 24px; box-shadow: 0 30px 70px rgba(0,0,0,0.2); }
+        .signup-header { text-align: center; margin-bottom: 30px; }
+        .signup-header h1 { font-size: 2em; color: #333; margin-bottom: 8px; }
+        .signup-header p { color: #666; }
+        .form-group { margin-bottom: 20px; }
+        .form-group label { display: block; margin-bottom: 8px; font-weight: 600; color: #333; }
+        .form-group input, .form-group select { width: 100%; padding: 14px 18px; border: 2px solid #e1e5e9; border-radius: 12px; font-size: 16px; transition: all 0.3s; }
+        .form-group input:focus, .form-group select:focus { outline: none; border-color: #667eea; box-shadow: 0 0 0 4px rgba(102,126,234,0.15); }
+        .user-type { display: flex; gap: 15px; margin-bottom: 22px; }
+        .user-type-label { font-weight: 600; color: #333; margin-bottom: 10px; display: block; }
+        .type-option { flex: 1; padding: 16px; border: 2px solid #e1e5e9; border-radius: 12px; cursor: pointer; text-align: center; transition: all 0.3s; }
+        .type-option:hover { border-color: #667eea; }
+        .type-option.selected { border-color: #667eea; background: #667eea10; }
+        .type-option .icon { font-size: 1.8em; display: block; margin-bottom: 6px; }
+        .type-option .title { font-weight: 600; display: block; }
+        .type-option .desc { font-size: 0.85em; color: #666; }
+        button { width: 100%; padding: 16px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; border-radius: 12px; font-size: 17px; font-weight: 600; cursor: pointer; transition: transform 0.2s; }
+        button:hover { transform: translateY(-2px); box-shadow: 0 12px 30px rgba(102,126,234,0.4); }
+        .error-msg { background: #fee2e2; color: #dc2626; padding: 14px; border-radius: 10px; margin-bottom: 20px; display: none; }
+        .login-link { text-align: center; margin-top: 25px; color: #666; }
+        .login-link a { color: #667eea; font-weight: 600; text-decoration: none; }
+        .login-link a:hover { text-decoration: underline; }
+        .back-link { text-align: center; margin-top: 20px; }
+        .back-link a { color: #666; text-decoration: none; font-size: 0.95em; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="signup-card">
+            <div class="signup-header">
+                <h1>🚀 Create Account</h1>
+                <p>Join the AI Resume Screening Platform</p>
+            </div>
+
+            <div class="error-msg" id="errorMsg"></div>
+
+            <form id="signupForm">
+                <div class="form-group">
+                    <label>Full Name</label>
+                    <input type="text" id="fullName" placeholder="Enter your full name">
+                </div>
+                <div class="form-group">
+                    <label>Username</label>
+                    <input type="text" id="username" placeholder="Choose a username" required>
+                </div>
+                <div class="form-group">
+                    <label>Email</label>
+                    <input type="email" id="email" placeholder="Enter your email" required>
+                </div>
+                <div class="form-group">
+                    <label>Password</label>
+                    <input type="password" id="password" placeholder="Create a password" required>
+                </div>
+                
+                <label class="user-type-label">I am a:</label>
+                <div class="user-type">
+                    <div class="type-option selected" data-type="false" onclick="selectUserType(this)">
+                        <span class="icon">👤</span>
+                        <span class="title">Job Seeker</span>
+                        <span class="desc">Looking for jobs</span>
+                    </div>
+                    <div class="type-option" data-type="true" onclick="selectUserType(this)">
+                        <span class="icon">💼</span>
+                        <span class="title">Employer</span>
+                        <span class="desc">Hiring talent</span>
+                    </div>
+                </div>
+                <input type="hidden" id="isEmployer" value="false">
+
+                <button type="submit" id="submitBtn">Create Account</button>
+            </form>
+
+            <div class="login-link">
+                Already have an account? <a href="/static/login.html">Sign in</a>
+            </div>
+
+            <div class="back-link">
+                <a href="/static/home.html">← Back to Home</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let selectedType = 'false';
+        
+        function selectUserType(el) {
+            document.querySelectorAll('.type-option').forEach(opt => opt.classList.remove('selected'));
+            el.classList.add('selected');
+            selectedType = el.dataset.type;
+            document.getElementById('isEmployer').value = selectedType;
+        }
+
+        document.getElementById('signupForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const email = document.getElementById('email').value;
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            const fullName = document.getElementById('fullName').value;
+            const isEmployer = document.getElementById('isEmployer').value === 'true';
+            
+            const btn = document.getElementById('submitBtn');
+            const errorMsg = document.getElementById('errorMsg');
+
+            btn.textContent = ' Creating account...';
+            btn.disabled = true;
+            errorMsg.style.display = 'none';
+
+            try {
+                const response = await fetch('http://localhost:8000/api/auth/signup', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        email,
+                        username,
+                        password,
+                        full_name: fullName,
+                        is_employer: isEmployer
+                    })
+                });
+
+                if (!response.ok) {
+                    const err = await response.json();
+                    throw new Error(err.detail || 'Registration failed');
+                }
+
+                const data = await response.json();
+                
+                // Auto login after signup
+                const formData = new URLSearchParams();
+                formData.append('username', username);
+                formData.append('password', password);
+
+                const loginResponse = await fetch('http://localhost:8000/api/auth/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                    body: formData
+                });
+
+                const loginData = await loginResponse.json();
+                
+                localStorage.setItem('token', loginData.access_token);
+                localStorage.setItem('user', JSON.stringify(loginData.user));
+                
+                if (isEmployer) {
+                    window.location.href = '/static/hr/index.html';
+                } else {
+                    window.location.href = '/static/consumer/index.html';
+                }
+                
+            } catch (error) {
+                errorMsg.textContent = error.message || 'Registration failed. Please try again.';
+                errorMsg.style.display = 'block';
+                btn.textContent = 'Create Account';
+                btn.disabled = false;
+            }
+        });
+    </script>
+</body>
+</html> -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>
+        TalentSync Signup
+    </title>
+
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+    >
+
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Arial,sans-serif;
+}
+
+/* body{
+
+    min-height:100vh;
+
+    background:#021b26;
+
+    overflow:hidden;
+
+    display:flex;
+    justify-content:center;
+    align-items:center;
+
+    position:relative;
+} */
+ body{
+
+    /* min-height:100vh; */
+
+    background:#021b26;
+
+    overflow-y:auto;
+
+    overflow-x:hidden;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    position:relative;
+
+    padding:40px 20px;
+}
+
+/* BACKGROUND GLOW */
+
+body::before{
+
+    content:"";
+
+    position:absolute;
+
+    width:500px;
+    height:500px;
+
+    border-radius:50%;
+
+    background:
+    radial-gradient(
+        rgba(67,233,123,0.18),
+        transparent 70%
+    );
+
+    top:-180px;
+    left:-150px;
+}
+
+body::after{
+
+    content:"";
+
+    position:absolute;
+
+    width:450px;
+    height:450px;
+
+    border-radius:50%;
+
+    background:
+    radial-gradient(
+        rgba(56,249,215,0.12),
+        transparent 70%
+    );
+
+    bottom:-150px;
+    right:-150px;
+}
+
+/* CONTAINER */
+
+/* .signup-container{
+
+    width:100%;
+    max-width:520px;
+    height:820px;
+
+    background:rgba(255,255,255,0.06);
+
+    border:1px solid rgba(255,255,255,0.08);
+
+    backdrop-filter:blur(18px);
+
+    border-radius:34px;
+
+    padding:45px;
+
+    position:relative;
+
+    z-index:5;
+
+    box-shadow:
+    0 20px 50px rgba(0,0,0,0.3);
+} */
+
+.signup-container{
+
+    width:100%;
+
+    max-width:520px;
+
+    background:rgba(255,255,255,0.06);
+
+    border:1px solid rgba(255,255,255,0.08);
+
+    backdrop-filter:blur(18px);
+
+    border-radius:34px;
+
+    padding:45px;
+
+    position:relative;
+
+    z-index:5;
+
+    box-shadow:
+    0 20px 50px rgba(0,0,0,0.3);
+
+    margin:40px 0;
+}
+/* LOGO */
+
+.signup-logo{
+
+    width:90px;
+    height:90px;
+
+    border-radius:30px;
+
+    margin:auto auto 30px;
+
+    background:
+    linear-gradient(
+        135deg,
+        #43e97b,
+        #38f9d7
+    );
+
+    display:flex;
+    justify-content:center;
+    align-items:center;
+
+    box-shadow:
+    0 12px 30px rgba(67,233,123,0.25);
+}
+
+.signup-logo i{
+
+    font-size:38px;
+
+    color:#021b26;
+}
+
+/* TITLE */
+
+.signup-title{
+
+    text-align:center;
+
+    margin-bottom:35px;
+}
+
+.signup-title h1{
+
+    color:white;
+
+    font-size:40px;
+
+    margin-bottom:12px;
+}
+
+.signup-title p{
+
+    color:#b8c8cf;
+
+    line-height:1.7;
+}
+
+/* FORM GRID */
+
+.form-grid{
+
+    display:grid;
+
+    grid-template-columns:1fr 1fr;
+
+    gap:18px;
+}
+
+/* INPUT GROUP */
+
+.input-group{
+
+    margin-bottom:22px;
+}
+
+.input-group label{
+
+    display:block;
+
+    margin-bottom:10px;
+
+    color:#dbe7ec;
+
+    font-size:15px;
+
+    font-weight:600;
+}
+
+.input-box{
+
+    position:relative;
+}
+
+.input-box i{
+
+    position:absolute;
+
+    top:50%;
+    left:18px;
+
+    transform:translateY(-50%);
+
+    color:#59f08b;
+
+    font-size:16px;
+}
+
+.input-box input,
+.input-box select{
+
+    width:100%;
+
+    padding:18px 18px 18px 52px;
+
+    border:none;
+
+    outline:none;
+
+    border-radius:18px;
+
+    background:rgba(255,255,255,0.06);
+
+    border:1px solid rgba(255,255,255,0.08);
+
+    color:white;
+
+    font-size:15px;
+
+    transition:0.3s;
+}
+
+.input-box input::placeholder{
+
+    color:#9fb3bd;
+}
+
+.input-box input:focus,
+.input-box select:focus{
+
+    border-color:rgba(67,233,123,0.35);
+
+    box-shadow:
+    0 0 0 4px rgba(67,233,123,0.08);
+}
+
+/* SELECT */
+
+.input-box select{
+
+    appearance:none;
+
+    color:#dbe7ec;
+}
+
+.input-box option{
+
+    background:#062432;
+
+    color:white;
+}
+
+/* FULL WIDTH */
+
+.full-width{
+
+    grid-column:1/3;
+}
+
+/* TERMS */
+
+.terms{
+
+    display:flex;
+
+    align-items:flex-start;
+
+    gap:12px;
+
+    margin:10px 0 28px;
+
+    color:#b8c8cf;
+
+    font-size:14px;
+
+    line-height:1.7;
+}
+
+.terms a{
+
+    color:#59f08b;
+
+    text-decoration:none;
+}
+
+/* BUTTON */
+
+.signup-btn{
+
+    width:100%;
+
+    padding:18px;
+
+    border:none;
+
+    border-radius:18px;
+
+    background:
+    linear-gradient(
+        135deg,
+        #43e97b,
+        #38f9d7
+    );
+
+    color:#021b26;
+
+    font-size:17px;
+
+    font-weight:bold;
+
+    cursor:pointer;
+
+    transition:0.35s;
+
+    margin-bottom:25px;
+}
+
+.signup-btn:hover{
+
+    transform:translateY(-3px);
+
+    box-shadow:
+    0 15px 30px rgba(67,233,123,0.22);
+}
+
+/* LOGIN */
+
+.login-text{
+
+    text-align:center;
+
+    color:#b8c8cf;
+
+    font-size:15px;
+}
+
+.login-text a{
+
+    color:#59f08b;
+
+    text-decoration:none;
+
+    font-weight:bold;
+}
+
+/* RESPONSIVE */
+
+@media(max-width:650px){
+
+    .signup-container{
+
+        margin:20px;
+
+        padding:35px 25px;
+    }
+
+    .form-grid{
+
+        grid-template-columns:1fr;
+    }
+
+    .full-width{
+
+        grid-column:auto;
+    }
+
+    .signup-title h1{
+
+        font-size:32px;
+    }
+}
+.dashboard-option{
+
+    position:relative;
+
+    background:rgba(255,255,255,0.06);
+
+    border:1px solid rgba(255,255,255,0.08);
+
+    backdrop-filter:blur(18px);
+
+    border-radius:32px;
+
+    padding:38px;
+
+    overflow:hidden;
+
+    cursor:pointer;
+
+    transition:
+    transform 0.45s ease,
+    box-shadow 0.45s ease,
+    border-color 0.45s ease,
+    background 0.45s ease;
+
+    box-shadow:
+    0 20px 40px rgba(0,0,0,0.22);
+}
+
+/* HOVER EFFECT */
+
+.dashboard-option:hover{
+
+    transform:
+    translateY(-10px)
+    scale(1.02);
+
+    border-color:
+    rgba(67,233,123,0.35);
+
+    background:
+    rgba(255,255,255,0.08);
+
+    box-shadow:
+    0 30px 60px rgba(67,233,123,0.18);
+}
+.dashboard-option::after{
+
+    content:"";
+
+    position:absolute;
+
+    inset:0;
+
+    border-radius:32px;
+
+    background:
+    linear-gradient(
+        135deg,
+        rgba(67,233,123,0.08),
+        transparent 60%
+    );
+
+    opacity:0;
+
+    transition:opacity 0.45s ease;
+}
+
+.dashboard-option:hover::after{
+
+    opacity:1;
+}
+/* CONTAINER */
+
+.signup-container{
+
+    width:100%;
+    max-width:520px;
+
+    background:rgba(255,255,255,0.06);
+
+    border:1px solid rgba(255,255,255,0.08);
+
+    backdrop-filter:blur(18px);
+
+    border-radius:34px;
+
+    padding:45px;
+
+    position:relative;
+
+    z-index:5;
+
+    overflow:hidden;
+
+    cursor:pointer;
+
+    transition:
+    transform 0.5s ease,
+    box-shadow 0.5s ease,
+    border-color 0.5s ease,
+    background 0.5s ease;
+
+    box-shadow:
+    0 20px 50px rgba(0,0,0,0.3);
+}
+
+/* TOP GLOW */
+
+.signup-container::before{
+
+    content:"";
+
+    position:absolute;
+
+    width:250px;
+    height:250px;
+
+    background:
+    radial-gradient(
+        rgba(67,233,123,0.18),
+        transparent 70%
+    );
+
+    top:-120px;
+    right:-120px;
+
+    transition:0.5s ease;
+}
+
+/* BOTTOM GLOW */
+
+.signup-container::after{
+
+    content:"";
+
+    position:absolute;
+
+    width:220px;
+    height:220px;
+
+    background:
+    radial-gradient(
+        rgba(56,249,215,0.12),
+        transparent 70%
+    );
+
+    bottom:-120px;
+    left:-120px;
+
+    transition:0.5s ease;
+}
+
+/* HOVER EFFECT */
+
+.signup-container:hover{
+
+    transform:
+    translateY(-10px)
+    scale(1.01);
+
+    border-color:
+    rgba(67,233,123,0.3);
+
+    background:
+    rgba(255,255,255,0.08);
+
+    box-shadow:
+    0 30px 70px rgba(67,233,123,0.18);
+}
+
+/* HOVER GLOW */
+
+.signup-container:hover::before{
+
+    transform:scale(1.2);
+}
+
+.signup-container:hover::after{
+
+    transform:scale(1.15);
+}
+
+    /* SPARKLES */
+
+.sparkles{
+
+    position:absolute;
+
+    width:100%;
+
+    height:100%;
+
+    top:0;
+    left:0;
+
+    overflow:hidden;
+
+    z-index:1;
+
+    pointer-events:none;
+}
+
+/* PARTICLES */
+
+.sparkles span{
+
+    position:absolute;
+
+    display:block;
+
+    width:4px;
+    height:4px;
+
+    border-radius:50%;
+
+    background:rgb(35, 146, 40);
+
+    box-shadow:
+    0 0 10px rgba(255,255,255,0.9),
+    0 0 20px rgba(67,233,123,0.6),
+    0 0 30px rgba(56,249,215,0.5);
+
+    animation:sparkle 6s linear infinite;
+}
+
+/* RANDOM POSITIONS */
+
+.sparkles span:nth-child(1){
+
+    top:10%;
+    left:15%;
+
+    animation-duration:4s;
+}
+
+.sparkles span:nth-child(2){
+
+    top:20%;
+    left:75%;
+
+    animation-duration:6s;
+}
+
+.sparkles span:nth-child(3){
+
+    top:70%;
+    left:20%;
+
+    animation-duration:5s;
+}
+
+.sparkles span:nth-child(4){
+
+    top:50%;
+    left:85%;
+
+    animation-duration:7s;
+}
+
+.sparkles span:nth-child(5){
+
+    top:80%;
+    left:60%;
+
+    animation-duration:4.5s;
+}
+
+.sparkles span:nth-child(6){
+
+    top:35%;
+    left:45%;
+
+    animation-duration:6.5s;
+}
+
+.sparkles span:nth-child(7){
+
+    top:15%;
+    left:55%;
+
+    animation-duration:5.5s;
+}
+
+.sparkles span:nth-child(8){
+
+    top:60%;
+    left:10%;
+
+    animation-duration:7s;
+}
+
+.sparkles span:nth-child(9){
+
+    top:85%;
+    left:90%;
+
+    animation-duration:5s;
+}
+
+.sparkles span:nth-child(10){
+
+    top:40%;
+    left:30%;
+
+    animation-duration:6s;
+}
+
+/* ANIMATION */
+
+@keyframes sparkle{
+
+    0%{
+
+        transform:scale(0.5);
+
+        opacity:0.2;
+    }
+
+    50%{
+
+        transform:scale(1.8);
+
+        opacity:1;
+    }
+
+    100%{
+
+        transform:scale(0.5);
+
+        opacity:0.2;
+    }
+}
+/* BACK BUTTON */
+
+.back-home-btn{
+
+    position:absolute;
+
+    top:30px;
+
+    left:30px;
+
+    display:flex;
+
+    align-items:center;
+
+    gap:12px;
+
+    padding:14px 22px;
+
+    border:none;
+
+    border-radius:18px;
+
+    background:rgba(255,255,255,0.06);
+
+    border:1px solid rgba(255,255,255,0.08);
+
+    backdrop-filter:blur(16px);
+
+    color:white;
+
+    font-size:15px;
+
+    font-weight:600;
+
+    cursor:pointer;
+
+    transition:0.35s ease;
+
+    z-index:20;
+
+    box-shadow:
+    0 10px 25px rgba(0,0,0,0.18);
+}
+
+/* ICON */
+
+.back-home-btn i{
+
+    color:#43e97b;
+
+    font-size:14px;
+}
+
+/* HOVER */
+
+.back-home-btn:hover{
+
+    transform:
+    translateY(-4px)
+    scale(1.02);
+
+    border-color:
+    rgba(67,233,123,0.3);
+
+    background:
+    rgba(255,255,255,0.08);
+
+    box-shadow:
+    0 15px 35px rgba(67,233,123,0.15);
+}
+
+/* MOBILE */
+
+@media(max-width:600px){
+
+    .back-home-btn{
+
+        top:20px;
+
+        left:20px;
+
+        padding:12px 18px;
+
+        font-size:14px;
+    }
+}
+</style>
+</head>
+
+<body>
+    <div class="sparkles">
+
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+
+</div>
+<!-- BACK TO HOME -->
+
+<button
+    class="back-home-btn"
+    onclick="window.location.href='/'"
+>
+
+    <i class="fa-solid fa-arrow-left"></i>
+
+    Back to Home
+
+</button>
+    <div class="signup-container">
+
+        <div class="signup-title">
+
+            <h1>
+                Create Account
+            </h1>
+
+            <p>
+                Join TalentSync and unlock AI-powered
+                recruitment intelligence.
+            </p>
+
+        </div>
+
+        <!-- FORM -->
+
+        <form id="signupForm">
+
+            <div class="form-grid">
+
+                <!-- FIRST NAME -->
+
+                <div class="input-group">
+
+                    <label>
+                        First Name
+                    </label>
+
+                    <div class="input-box">
+
+                        <i class="fa-solid fa-user"></i>
+
+                        <input
+                            type="text"
+                            id="firstName"
+                            name="first_name"
+                            placeholder="First name"
+                            required
+                        >
+
+                    </div>
+
+                </div>
+
+                <!-- LAST NAME -->
+
+                <div class="input-group">
+
+                    <label>
+                        Last Name
+                    </label>
+
+                    <div class="input-box">
+
+                        <i class="fa-solid fa-user"></i>
+
+                        <input
+                            type="text"
+                            id="lastName"
+                            name="last_name"
+                            placeholder="Last name"
+                            required
+                        >
+
+                    </div>
+
+                </div>
+
+                <!-- EMAIL -->
+
+                <div class="input-group full-width">
+
+                    <label>
+                        Email Address
+                    </label>
+
+                    <div class="input-box">
+
+                        <i class="fa-solid fa-envelope"></i>
+
+                        <input
+                            type="email"
+                            id="email"
+                            name="email"
+                            placeholder="Enter your email"
+                            required
+                        >
+
+                    </div>
+
+                </div>
+
+                <!-- PASSWORD -->
+
+                <div class="input-group">
+
+                    <label>
+                        Password
+                    </label>
+
+                    <div class="input-box">
+
+                        <i class="fa-solid fa-lock"></i>
+
+                        <input
+                            type="password"
+                            id="password"
+                            name="password"
+                            placeholder="Password"
+                            required
+                        >
+
+                    </div>
+
+                </div>
+
+                <!-- CONFIRM PASSWORD -->
+
+                <div class="input-group">
+
+                    <label>
+                        Confirm Password
+                    </label>
+
+                    <div class="input-box">
+
+                        <i class="fa-solid fa-shield"></i>
+
+                        <input
+                            type="password"
+                            id="confirmPassword"
+                            name="confirm_password"
+                            placeholder="Confirm password"
+                            required
+                        >
+
+                    </div>
+
+                </div>
+
+                <!-- ROLE -->
+
+                <div class="input-group full-width">
+
+                    <label>
+                        Select Role
+                    </label>
+
+                    <div class="input-box">
+
+                        <i class="fa-solid fa-briefcase"></i>
+
+                        <select id="role" name="role" required>
+
+                            <option value="Consumer">
+                                Consumer / Job Seeker
+                            </option>
+
+                            <option value="HR">
+                                HR Recruiter
+                            </option>
+
+                        </select>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <!-- TERMS -->
+
+            <div class="terms">
+
+                <input type="checkbox" required>
+
+                <span>
+                    I agree to the
+                    <a href="#">
+                        Terms & Conditions
+                    </a>
+                    and Privacy Policy.
+                </span>
+
+            </div>
+
+            <!-- BUTTON -->
+
+            <button
+                type="submit"
+                class="signup-btn"
+            >
+
+                Create Account
+
+            </button>
+
+        </form>
+
+        <!-- LOGIN -->
+
+        <div class="login-text">
+
+            Already have an account?
+
+            <a href="/login">
+                Login
+            </a>
+
+        </div>
+
+    </div>
+<script>
+document.getElementById("signupForm")
+.addEventListener("submit", async function(e) {
+
+    e.preventDefault();
+
+    const password =
+        document.getElementById("password").value;
+
+    const confirmPassword =
+        document.getElementById("confirmPassword").value;
+
+    if (password !== confirmPassword) {
+        alert("Passwords do not match");
+        return;
+    }
+
+    const fullName =
+        document.getElementById("firstName").value +
+        " " +
+        document.getElementById("lastName").value;
+
+    const email =
+        document.getElementById("email").value;
+
+    const username =
+        email.split("@")[0];
+
+    const role =
+        document.getElementById("role").value;
+
+    const response = await fetch("/api/signup", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            full_name: fullName,
+            email: email,
+            username: username,
+            password: password,
+            is_employer: role === "HR"
+        })
+    });
+
+    const data = await response.json();
+
+    if (response.ok) {
+        alert("Account created successfully");
+        window.location.href = "/login";
+    }
+    else {
+        alert(data.detail);
+    }
+});
+</script>
+</body>
+</html>
+
