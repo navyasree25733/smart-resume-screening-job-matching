@@ -117,14 +117,32 @@
 #     ])
 #     return suggestions[:4]
 
+# from sentence_transformers import SentenceTransformer, util
+# import numpy as np
+# import re
+# from typing import List, Dict
+# from .models import JobDescription
+
+# # Use a lightweight model
+# model = SentenceTransformer('all-MiniLM-L6-v2')
 from sentence_transformers import SentenceTransformer, util
 import numpy as np
 import re
 from typing import List, Dict
 from .models import JobDescription
 
-# Use a lightweight model
-model = SentenceTransformer('all-MiniLM-L6-v2')
+# Lazy Loading Model (Render Memory Friendly)
+_model = None
+
+def get_model():
+    global _model
+
+    if _model is None:
+        _model = SentenceTransformer(
+            "all-MiniLM-L6-v2"
+        )
+
+    return _model
 
 def calculate_ats_score(resume_text: str, job_desc: JobDescription) -> Dict:
     """Calculate ATS score using weighted formula"""
@@ -202,16 +220,50 @@ def calculate_skill_match(resume: str, required_skills: List[str]) -> float:
     matches = sum(1 for skill in required_skills if skill.lower() in resume_lower)
     return min(1.0, matches / max(len(required_skills), 1))
 
+# def calculate_semantic_match(resume: str, job_desc: str) -> float:
+#     """BERT-based semantic similarity"""
+#     # Truncate long texts for efficiency
+#     resume_batch = resume[:1000] if len(resume) > 1000 else resume
+#     job_batch = job_desc[:1000] if len(job_desc) > 1000 else job_desc
+    
+#     resume_embedding = model.encode(resume_batch)
+#     job_embedding = model.encode(job_batch)
+#     similarity = util.cos_sim(resume_embedding, job_embedding)[0][0].item()
+#     return float(similarity)
+
+
 def calculate_semantic_match(resume: str, job_desc: str) -> float:
     """BERT-based semantic similarity"""
-    # Truncate long texts for efficiency
-    resume_batch = resume[:1000] if len(resume) > 1000 else resume
-    job_batch = job_desc[:1000] if len(job_desc) > 1000 else job_desc
-    
-    resume_embedding = model.encode(resume_batch)
-    job_embedding = model.encode(job_batch)
-    similarity = util.cos_sim(resume_embedding, job_embedding)[0][0].item()
+
+    model = get_model()
+
+    resume_batch = (
+        resume[:1000]
+        if len(resume) > 1000
+        else resume
+    )
+
+    job_batch = (
+        job_desc[:1000]
+        if len(job_desc) > 1000
+        else job_desc
+    )
+
+    resume_embedding = model.encode(
+        resume_batch
+    )
+
+    job_embedding = model.encode(
+        job_batch
+    )
+
+    similarity = util.cos_sim(
+        resume_embedding,
+        job_embedding
+    )[0][0].item()
+
     return float(similarity)
+
 
 def calculate_experience(resume: str) -> float:
     """Extract years of experience"""
